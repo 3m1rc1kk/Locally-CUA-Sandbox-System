@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="cLocally-CUA-Sandbox-System",
+    name="Locally-CUA-Sandbox-System",
     version="0.1.0",
     packages=find_packages(),
     install_requires=[

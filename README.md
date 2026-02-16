@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/CuaOS_logo.png" width="320" alt="CuaOS logo">
+  <img src="assets/CuaOS_logo.png" width="420" alt="CuaOS logo">
 </p>
 
 

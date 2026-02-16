@@ -34,7 +34,7 @@ def resize_keep_aspect(img: Image.Image, max_dim: int) -> Image.Image:
     return img.resize((new_w, new_h), Image.Resampling.LANCZOS)
 
 def capture_screen(sandbox, save_path: str) -> Image.Image:
-    """Screenshot for LLM: Minimize to MAX_DIM and write to disk."""
+    """Capture screenshot for LLM: resized to MAX_DIM and saved to disk."""
     img = sandbox.screenshot().convert("RGB")
     img = resize_keep_aspect(img, cfg.MAX_DIM)
     img.save(save_path)
@@ -42,7 +42,7 @@ def capture_screen(sandbox, save_path: str) -> Image.Image:
 
 
 def capture_screen_raw(sandbox) -> Image.Image:
-    """For GUI: Returns raw image without touching the resolution."""
+    """For the GUI: return raw image without touching resolution."""
     return sandbox.screenshot().convert("RGB")
 
 

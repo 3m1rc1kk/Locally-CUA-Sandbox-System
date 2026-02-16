@@ -33,7 +33,7 @@ def _dot(color: str, text: str) -> str:
 # ═══════════════════════════════════════════
 
 class TopBar(QFrame):
-    """Docker durumu, Model durumu, Adım, Gecikme göstergesi."""
+    """Docker status, Model status, Step counter, Latency indicator."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -63,39 +63,39 @@ class TopBar(QFrame):
         layout.addWidget(self.model_status)
 
         # Step counter
-        self.step_label = QLabel("STEP: 0")
+        self.step_label = QLabel("Step: 0")
         self.step_label.setStyleSheet(f"color: {C.TEXT_DIM}; font-size: 12px;")
         layout.addWidget(self.step_label)
 
         # Latency
-        self.latency_label = QLabel("Delay: —")
+        self.latency_label = QLabel("Latency: —")
         self.latency_label.setStyleSheet(f"color: {C.TEXT_DIM}; font-size: 12px;")
         layout.addWidget(self.latency_label)
 
     def set_docker_status(self, connected: bool) -> None:
         color = C.GREEN if connected else C.RED
-        text = "Connection" if connected else "No Connection"
+        text = "Connected" if connected else "Disconnected"
         self.docker_status.setText(_dot(color, f"Docker: {text}"))
 
     def set_model_status(self, status: str) -> None:
         color_map = {"loading": C.ORANGE, "ready": C.GREEN, "error": C.RED}
         color = color_map.get(status, C.TEXT_MUTED)
-        label_map = {"loading": "Yükleniyor…", "ready": "Hazır", "error": "Hata"}
+        label_map = {"loading": "Loading…", "ready": "Ready", "error": "Error"}
         self.model_status.setText(_dot(color, f"Model: {label_map.get(status, status)}"))
 
     def set_step(self, n: int) -> None:
-        self.step_label.setText(f"STEP: {n}")
+        self.step_label.setText(f"Step: {n}")
 
     def set_latency(self, ms: float) -> None:
-        self.latency_label.setText(f"Delay: {ms:.0f}ms")
+        self.latency_label.setText(f"Latency: {ms:.0f}ms")
 
 
 # ═══════════════════════════════════════════
-# COMMAND PANEL (Sol)
+# COMMAND PANEL (Left)
 # ═══════════════════════════════════════════
 
 class CommandPanel(QFrame):
-    """Command input, pre-set commands, history, and agent step list."""
+    """Command input, preset commands, history and agent step list."""
 
     run_requested = pyqtSignal(str)
     stop_requested = pyqtSignal()
@@ -111,12 +111,12 @@ class CommandPanel(QFrame):
         layout.setSpacing(8)
 
         # --- Command input ---
-        lbl = QLabel("Command")
+        lbl = QLabel("COMMAND")
         lbl.setObjectName("sectionTitle")
         layout.addWidget(lbl)
 
         self.cmd_input = QLineEdit()
-        self.cmd_input.setPlaceholderText("Enter the command… (e.g., Open browser)")
+        self.cmd_input.setPlaceholderText("Enter command… (e.g. Open browser)")
         self.cmd_input.returnPressed.connect(self._emit_run)
         layout.addWidget(self.cmd_input)
 
@@ -133,7 +133,7 @@ class CommandPanel(QFrame):
         layout.addLayout(btn_row)
 
         # --- Presets ---
-        lbl2 = QLabel("READY-MADE COMMANDS")
+        lbl2 = QLabel("PRESETS")
         lbl2.setObjectName("sectionTitle")
         layout.addWidget(lbl2)
 
@@ -141,9 +141,9 @@ class CommandPanel(QFrame):
             ("🏠 Home", "Click Home file"),
             ("💻 Terminal", "Open terminal"),
             ("🌐 Browser", "Open web browser"),
-            ("📝 Notebook", "Open text editor"),
+            ("📝 Notepad", "Open text editor"),
             ("🔍 Wikipedia", 'Open browser, go to Wikipedia, search "LLM"'),
-            ("📁 Files", "Open double click file manager"),
+            ("📁 Files", "Open file manager"),
         ]
         grid = QGridLayout()
         grid.setSpacing(4)
@@ -191,7 +191,7 @@ class CommandPanel(QFrame):
 
 
 # ═══════════════════════════════════════════
-# INSPECTOR (Sağ)
+# INSPECTOR (Right)
 # ═══════════════════════════════════════════
 
 class InspectorPanel(QFrame):
@@ -208,14 +208,14 @@ class InspectorPanel(QFrame):
         layout.setSpacing(10)
 
         # --- Last Action ---
-        lbl = QLabel("Last Action")
+        lbl = QLabel("LAST ACTION")
         lbl.setObjectName("sectionTitle")
         layout.addWidget(lbl)
 
         self.action_display = QTextEdit()
         self.action_display.setReadOnly(True)
         self.action_display.setMaximumHeight(140)
-        self.action_display.setPlaceholderText("Last action, metrics, settings...")
+        self.action_display.setPlaceholderText("No action yet…")
         layout.addWidget(self.action_display)
 
         # --- Metrics ---
@@ -231,9 +231,9 @@ class InspectorPanel(QFrame):
         self.metric_labels: Dict[str, tuple] = {}
         for i, (key, label) in enumerate([
             ("steps", "Total Steps"),
-            ("clicks", "Click"),
-            ("types", "Type"),
-            ("elapsed", "Time (s)"),
+            ("clicks", "Clicks"),
+            ("types", "Types"),
+            ("elapsed", "Elapsed (s)"),
         ]):
             val_lbl = QLabel("0")
             val_lbl.setObjectName("metricValue")
@@ -248,11 +248,11 @@ class InspectorPanel(QFrame):
         layout.addWidget(metrics_frame)
 
         # --- VM Info ---
-        lbl3 = QLabel("SANDBOX INFORMATION")
+        lbl3 = QLabel("SANDBOX INFO")
         lbl3.setObjectName("sectionTitle")
         layout.addWidget(lbl3)
 
-        self.vm_info = QLabel("Container: —\Resolution: —\nAPI: —")
+        self.vm_info = QLabel("Container: —\nResolution: —\nAPI: —")
         self.vm_info.setStyleSheet(f"color: {C.TEXT_DIM}; font-size: 11px; padding: 8px; background: {C.BG_INPUT}; border-radius: 6px;")
         self.vm_info.setWordWrap(True)
         layout.addWidget(self.vm_info)
@@ -285,7 +285,7 @@ class InspectorPanel(QFrame):
     def set_config(self, cfg) -> None:
         lines = [
             f"Model: {getattr(cfg, 'GGUF_MODEL_FILENAME', '?')}",
-            f"Max Adım: {getattr(cfg, 'MAX_STEPS', '?')}",
+            f"Max Steps: {getattr(cfg, 'MAX_STEPS', '?')}",
             f"N_CTX: {getattr(cfg, 'N_CTX', '?')}",
             f"GPU Layers: {getattr(cfg, 'N_GPU_LAYERS', '?')}",
         ]
@@ -293,11 +293,11 @@ class InspectorPanel(QFrame):
 
 
 # ═══════════════════════════════════════════
-# LOG PANEL (Alt)
+# LOG PANEL (Bottom)
 # ═══════════════════════════════════════════
 
 class LogPanel(QFrame):
-"""Configured logs, error filter, export."""
+    """Structured logs, error filter, export."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -348,8 +348,8 @@ class LogPanel(QFrame):
         self._entries.clear()
 
     def _export(self) -> None:
-        path, _ = QFileDialog.getSaveFileName(self, "Log Export", "cua_logs.json", "JSON (*.json)")
+        path, _ = QFileDialog.getSaveFileName(self, "Export Logs", "cua_logs.json", "JSON (*.json)")
         if path:
             with open(path, "w", encoding="utf-8") as f:
                 json.dump(self._entries, f, ensure_ascii=False, indent=2)
-            self.append(f"Logs have been exported: {path}", "success")
+            self.append(f"Logs exported: {path}", "success")

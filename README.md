@@ -249,16 +249,16 @@ All parameters are in `src/config.py`:
 
 | # | Feature | Description | Est. Time | Status |
 |---|---------|-------------|-----------|--------|
-| 1| **Project Restructuring** | Reorganize files into `src/`, `assets/`, `img/` directories; update all import paths |         | ✅ Done |
-| 2 | **Mission Control UI** | Professional 5-panel PyQt6 interface with live VM view, command panel, inspector, and logs |         | ✅ Done|
-| 3 | **README & Documentation** | Comprehensive README with installation guide, configuration reference, and troubleshooting |        | ✅ Done |
-| 5 | **A model that plans detailed operations.** | An LLM (API with) that performs detailed planning on behalf of the user for more complex operations| 1-2 Week| 🔄 In Progress |
-| 4 | **Multi-Model Support** | Allow switching between different VLMs (Qwen3-VL, LLaVA, InternVL) via config or UI dropdown | unknown | ⬜ In Progress |
-| 5 | **Conversation Memory** | Persistent chat history so the agent remembers context across multiple commands in a session | unknown | ⬜ Not Started |
-| 6 | **Action Undo / Rollback** | Snapshot VM state before each action and allow rollback on failure | unknown | ⬜ Not Started |
-| 7 | **Multi-Monitor / Multi-VM** | Support controlling multiple Docker containers simultaneously from a single UI | unknown | ⬜ Not Started |
+| 1| **Project Restructuring** | Reorganize files into `src/`, `assets/`, `img/` directories; update all import paths |         | ✅  |
+| 2 | **Mission Control UI** | Professional 5-panel PyQt6 interface with live VM view, command panel, inspector, and logs |         | ✅ |
+| 3 | **README & Documentation** | Comprehensive README with installation guide, configuration reference, and troubleshooting |        | ✅  |
+| 5 | **A model that plans detailed operations.** | An LLM (API with) that performs detailed planning on behalf of the user for more complex operations| 1-2 Week| 🔄  |
+| 4 | **Multi-Model Support** | Allow switching between different VLMs (Qwen3-VL, LLaVA, InternVL) via config or UI dropdown | unknown | ⬜  |
+| 5 | **Conversation Memory** | Persistent chat history so the agent remembers context across multiple commands in a session | unknown | ⬜  |
+| 6 | **Action Undo / Rollback** | Snapshot VM state before each action and allow rollback on failure | unknown | ⬜ |
+| 7 | **Multi-Monitor / Multi-VM** | Support controlling multiple Docker containers simultaneously from a single UI | unknown | ⬜ |
 | 8 | **Voice Command Input** | Accept voice commands via Whisper (local STT) instead of typing | unknown | ⬜ Not Started |
-| 9 | **Windows & macOS Support** | Cross-platform compatibility with native installers and platform-specific sandboxes | unknown | ⬜ Not Started |
+| 9 | **Windows & macOS Support** | Cross-platform compatibility with native installers and platform-specific sandboxes | unknown | ⬜ |
 
 ## 📄 License
 

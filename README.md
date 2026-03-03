@@ -23,10 +23,19 @@ A locally-running AI agent that autonomously controls a virtual desktop inside a
 Most "computer use" demos rely on cloud-hosted models (GPT-4V, Claude, etc.). This project runs the **entire pipeline locally**:
 
 1. A **Docker container** (`trycua/cua-xfce`) provides a full XFCE Linux desktop accessible via VNC and a REST API.
-2. A **Qwen3-VL 8B** vision-language model (GGUF format, accelerated on your NVIDIA GPU via `llama-cpp-python`) looks at the VM's screen and decides the next action.
-3. A **PyQt6 Mission Control UI** lets you issue commands, watch the agent work in real-time, inspect each step, and intervene when needed.
+2. A **Planner model** (text-only GGUF, e.g. Octopus-Planning Q5_K_M) breaks down complex user objectives into atomic, verifiable steps.
+3. A **Qwen3-VL 8B** vision-language model (GGUF format, accelerated on your NVIDIA GPU via `llama-cpp-python`) looks at the VM's screen, executes each step, and verifies success.
+4. A **PyQt6 Mission Control UI** lets you issue commands, watch the agent work in real-time, inspect each step, and intervene when needed.
 
-**Agent loop:** `Screenshot → Model inference → Action (click/type/scroll/hotkey) → Wait → Repeat` — until the objective is complete or a safety guard triggers.
+**Hierarchical Agent Loop:**
+```
+User Objective
+  → Planner (text-only GGUF) → [Step 1, Step 2, Step 3, ...]
+    → For each step:
+        Screenshot → Executor (Qwen3-VL) → Action (click/type/scroll)
+        Screenshot → Verifier (Qwen3-VL) → Pass/Fail
+    → All steps done → Objective complete
+```
 
 ## ✨ Features
 
@@ -148,7 +157,19 @@ conda activate cua
 pip install -r requirements.txt
 ```
 
-### 8. Translation Model (Optional — Turkish Command Support)
+### 8. Planner Model (Local GGUF — for Hierarchical Planning)
+
+The hierarchical planner uses a **separate text-only GGUF model** to decompose complex objectives into steps. You can either:
+
+**Option A — Use a local `.gguf` file (recommended):**
+Download any text-only GGUF model (e.g. [Octopus-Planning Q5_K_M](https://huggingface.co)) and select it in the GUI via the `📂 Browse` button.
+
+**Option B — Auto-download from HuggingFace:**
+Set `PLANNER_GGUF_REPO_ID` and `PLANNER_GGUF_MODEL_FILENAME` in `src/config.py`.
+
+> **Note:** The planner runs on **CPU by default** when the executor model (Qwen3-VL) is already using the GPU, to avoid CUDA memory conflicts. Auto GPU detection handles this automatically.
+
+### 9. Translation Model (Optional — Turkish Command Support)
 
 To auto-translate Turkish commands to English:
 ```bash
